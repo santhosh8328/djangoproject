@@ -75,3 +75,20 @@ class FileUploadView(APIView):
             return Response({"message": "File uploaded successfully", "file_path": file_path}, status=200)
 
         return Response(serializer.errors, status=400)
+    
+    
+class ListUploadedFilesView(APIView):
+    def get(self, request):
+        upload_dir = settings.UPLOAD_DIR
+        
+        # Check if the directory exists
+        if not os.path.exists(upload_dir):
+            return Response({"error": "Upload directory does not exist"}, status=404)
+        
+        # List all files in the directory
+        files = os.listdir(upload_dir)
+
+        return Response({
+            "UPLOAD_DIR": upload_dir,
+            "files": files if files else "No files uploaded yet."
+        })

@@ -9,5 +9,6 @@ path('users/', user_list, name='user-list'),
 path('create-user/', create_user, name='create-user'), 
 path('sleep/', sleep_view, name='sleep'),
 path('upload/', FileUploadView.as_view(), name='file-upload'),
+path('list-files/', ListUploadedFilesView.as_view(), name='list-files'),
 
 ]
