@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+data:
+  DATABASE_NAME: "test_database"
+  DATABASE_USER: "depl"
+  DATABASE_HOST: "192.168.29.100"
+  DATABASE_PORT: "3306"

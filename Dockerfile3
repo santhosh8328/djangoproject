@@ -1,0 +1,44 @@
+FROM python:3.6.9-slim AS build
+
+WORKDIR /app
+
+RUN useradd -ms /bin/bash appuser
+
+
+RUN apt-get update && \
+    apt-get install -y \
+    gcc \
+    libmariadb-dev-compat \
+    libmariadb-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN pip install --upgrade pip
+
+USER appuser
+
+COPY requirement.txt /app/
+RUN pip install --no-cache-dir -r requirement.txt
+
+
+COPY . /app/
+
+FROM python:3.6.9-slim
+
+WORKDIR /app
+
+RUN useradd -ms /bin/bash appuser
+
+
+
+RUN apt-get update && \
+    apt-get install -y \
+    libmariadb3 \
+    && rm -rf /var/lib/apt/lists/*
+USER appuser
+COPY --from=build /usr/local/lib/python3.6/site-packages /usr/local/lib/python3.6/site-packages
+COPY --from=build /app /app
+
+EXPOSE 8000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "testproject.wsgi:application"]
