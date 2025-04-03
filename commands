@@ -1,0 +1,37 @@
+
+to load the backup sql into system
+
+
+
+FROM mysql:8.0
+
+ENV MYSQL_ROOT_PASSWORD=mysecretpassword \
+    MYSQL_USER=depl \
+    MYSQL_PASSWORD=depl@0369 \
+    MYSQL_DATABASE=test_databasee
+
+COPY backup.sql /docker-entrypoint-initdb.d/backup.sql
+
+
+
+
+FROM mysql:8.0
+
+# Set root password only (we’ll handle depl in the script)
+ENV MYSQL_ROOT_PASSWORD=mysecretpassword \
+    MYSQL_DATABASE=test_databasee
+
+# Copy initialization script and backup.sql
+COPY init.sql /docker-entrypoint-initdb.d/01-init.sql
+COPY backup.sql /docker-entrypoint-initdb.d/02-backup.sql
+
+CREATE USER 'depl'@'%' IDENTIFIED BY 'depl@0369';
+GRANT ALL PRIVILEGES ON test_databasee.* TO 'depl'@'%';
+
+
+
+
+docker run -dt -v sample:/var/lib/mysql -p 192.168.29.31:3006:3006 mysql
+
+
+docker run-dt -v sample:/app/u8ploaded_files/ -p  192.168.29.31:8000:8000 sample
