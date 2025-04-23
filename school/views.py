@@ -92,3 +92,19 @@ class ListUploadedFilesView(APIView):
             "UPLOAD_DIR": upload_dir,
             "files": files if files else "No files uploaded yet."
         })
+        
+        
+class CheckHealthOfApplication(APIView):
+    def get(self, request):
+        return Response(
+            {"status": "healthy", "message": "Application is running correctly"},
+            status=status.HTTP_200_OK
+        )
+
+class CheckReadyOfApplication(APIView):
+    def get(self, request):
+        return Response(
+            {"status": "healthy", "message": "Application is Ready to accept requests"},
+            status=status.HTTP_200_OK
+        )
+        
