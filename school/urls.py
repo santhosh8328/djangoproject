@@ -12,6 +12,9 @@ path('upload/', FileUploadView.as_view(), name='file-upload'),
 path('list-files/', ListUploadedFilesView.as_view(), name='list-files'),
 path('health/', CheckHealthOfApplication.as_view(),name='health'),
 path('ready/', CheckReadyOfApplication.as_view(),name='health'),
+path('upload2/', FileUploadView2.as_view(), name='file-upload2'),
+path('list-files2/', ListUploadedFilesView2.as_view(), name='list-files2'),
+
 
 
 ]

@@ -76,6 +76,62 @@ class FileUploadView(APIView):
 
         return Response(serializer.errors, status=400)
     
+
+UPLOAD_DIR2 = '/data'
+
+# Ensure the directory exists
+os.makedirs(UPLOAD_DIR2, exist_ok=True)
+
+# New class to handle file saving
+class FileStorageHandler2:
+    def __init__(self, upload_dir):
+        self.upload_dir = upload_dir
+
+    def save_file(self, file):
+        file_path = os.path.join(self.upload_dir, file.name)
+        with open(file_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+        return file_path
+
+class FileUploadView2(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = FileUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            file = serializer.validated_data['file']
+
+            try:
+                storage_handler = FileStorageHandler2(UPLOAD_DIR2)
+                file_path = storage_handler.save_file(file)
+                return Response(
+                    {"message": "File uploaded successfully", "file_path": file_path}, 
+                    status=200
+                )
+            except Exception as e:
+                return Response({"error": str(e)}, status=500)
+
+        return Response(serializer.errors, status=400)
+
+
+class ListUploadedFilesView2(APIView):
+    def get(self, request):
+        upload_dir = UPLOAD_DIR2
+        
+        # Check if the directory exists
+        if not os.path.exists(upload_dir):
+            return Response({"error": "Upload directory does not exist"}, status=404)
+        
+        # List all files in the directory
+        files = os.listdir(upload_dir)
+
+        return Response({
+            "UPLOAD_DIR": upload_dir,
+            "files": files if files else "No files uploaded yet."
+        })
+        
+    
     
 class ListUploadedFilesView(APIView):
     def get(self, request):
