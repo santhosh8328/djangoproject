@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: state
+  namespace: default
+
+spec:
+  serviceName: state
+  replicas: 1
+  selector:
+    matchLabels:
+      app: state
+  template:
+    metadata:
+      labels:
+        app: state
+    spec:
+      containers:
+      - name: state
+        image: localhost:32000/test2:latest
+        ports:
+        - containerPort: 8000
+          name: state
+        volumeMounts:
+        - name: data
+          mountPath: /data
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: my-pvc

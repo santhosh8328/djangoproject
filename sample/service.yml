@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: multi-app-service
+  namespace: default  # Your specified namespace
+  labels:
+    app: multi-svc
+spec:
+  selector:
+    app: multi-dep  # Targets Pods with label app: multi-app
+  ports:
+  - name: main
+    port: 80        # Service port for main-app
+    targetPort: 8000  # Pod port for main-app
+    protocol: TCP
+  - name: sidecar
+    port: 81        # Service port for nginx-sidecar
+    targetPort: 81  # Pod port for nginx-sidecar
+    protocol: TCP
+  type: ClusterIP   # Internal cluster access
+

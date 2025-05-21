@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/load-balance: "ip_hash"  # Enable IP Hash
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+spec:
+  ingressClassName: nginx  # <-- ADD THIS
+  rules:
+  - host: dev.clas
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: multi-app-service
+            port:
+              number: 80
+
+      - path: /sidecar
+        pathType: Prefix
+        backend:
+          service:
+            name: multi-app-service
+            port:
+              number: 81
